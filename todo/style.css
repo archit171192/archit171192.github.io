@@ -20,4 +20,13 @@
 
 .done {
   text-decoration: line-through;
+  color: tomato;
+}
+li {
+    padding: 5px, 5px;
+    font-family: 'Oswald', Helvetica, sans-serif;
+}
+
+button {
+    padding: 5px, 5px
 }
