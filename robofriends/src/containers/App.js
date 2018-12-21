@@ -5,37 +5,32 @@ import SearchBox from './../components/SearchBox'
 import Scroll from './../components/Scroll';
 import './App.css';
 import ErrorBoundary from './../components/ErrorBoundary';
-import { setSearchField } from './../action';
+import { setSearchField, requestRobots } from './../action';
 
 const mapStateToProps = (state) => {
     return {
-        searchField: state.searchField
+        searchField: state.searchRobots.searchField,
+        isPending: state.requestRobots.isPending,
+        robots: state.requestRobots.robots,
+        error: state.requestRobots.error
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSearchChange: (event) => {
-            return dispatch(setSearchField(event.target.value));
-        }
+        onSearchChange: (event) => dispatch(setSearchField(event.target.value)),
+        onRequestRobots: () => dispatch(requestRobots)
     }
 }
 class App extends Component {
-    constructor() {
-        super();
-        this.state = {
-            robots: []
-        }
-    }
 
     render () {
-        const { robots } = this.state;
-        const { searchField, onSearchChange } = this.props;
+        const { searchField, onSearchChange, robots, isPending } = this.props;
         const filteredRobots = robots.filter( robot => {
             return robot.name.toLowerCase().includes(searchField.toLowerCase());
         });
 
-        if(!this.state.robots.length) {
+        if(isPending) {
             return <h1>Loading</h1>
         } else {
             return (
@@ -53,13 +48,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        fetch('https://jsonplaceholder.typicode.com/users')
-        .then(response => {
-            return response.json();
-        })
-        .then(users => {
-            this.setState( { robots : users } );
-        });
+        this.props.onRequestRobots();
     }
 }
 
